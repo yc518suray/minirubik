@@ -14,12 +14,15 @@ INVALID_STATES := 1234567111111 123456711111111 02345671111111 82345671111111 \
 
 .PHONY: all check prove clean indent
 
-all: solver mini
+all: solver mini solver_heuristic
 
 solver: solver.c
 	$(CC) $(CFLAGS) $< -o $@
 
 mini: mini.c
+	$(CC) $(CFLAGS) $< -o $@
+
+solver_heuristic: solver_heuristic.c
 	$(CC) $(CFLAGS) $< -o $@
 
 check: solver mini $(VECTORS)
@@ -94,4 +97,4 @@ endif
 	$(CLANG_FORMAT) -i $(C_SOURCES)
 
 clean:
-	$(RM) solver mini
+	$(RM) solver mini solver_heuristic
