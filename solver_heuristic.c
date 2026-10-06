@@ -109,6 +109,19 @@ static void unrank_state(uint32_t rank, state_t *state, uint8_t flag)
 	}
 }
 
+static int verify_solution(state_t *state, uint8_t *sol, uint8_t N)
+{
+	// verify if the solution is correct (optimal in theory)
+	//
+	// state 	-> the input state
+	// sol		-> the solution
+	// N		-> number of moves in the solution
+	
+	for(uint8_t i = 1; i <= N; i++) *state = apply_move(*state, sol[i]);
+	uint32_t result = rank_state(state, 2);
+	return result == 0;
+}
+
 static int valid(const state_t *state)
 {
     uint8_t sum = 0;
@@ -259,13 +272,14 @@ static int self_test(void)
     return 1;
 }
 
-static void IDA_Star_search(state_t *root_state, uint8_t *o_table, uint8_t *p_table)
+static void IDA_Star_search(state_t *root_state, uint8_t *o_table, uint8_t *p_table, uint8_t flag)
 {
 	// perform IDA* search
 	// root_state	-> input state
 	// o_table		-> heuristic table of orientations
 	// p_table		-> heuristic table of permutations
 	// max_step		-> maximum number of moves
+	// flag			-> 0 to mute output solution, 1 to print output solution
 	
 	uint8_t move_stack [GOD_NUMBER + 1];
 	uint8_t count_stack [GOD_NUMBER + 1] = {0};
@@ -322,7 +336,13 @@ static void IDA_Star_search(state_t *root_state, uint8_t *o_table, uint8_t *p_ta
 			// check if reaching the solved state
 			if(rank == 0)
 			{
+				if(!verify_solution(root_state, move_stack, g))
+				{
+					printf("stopped at incorrect solution\n");
+					return;
+				}
 				const char *separator = "";
+				if(!flag) return;
 				for(uint8_t i = 1; i < top; i++)
 				{
 					printf("%s%s", separator, move_names[move_stack[i]]);
@@ -399,6 +419,25 @@ int main(int argc, char **argv)
         puts("max_steps_o <= 11\nmax_steps_p <= 11");
         return output_failed();
     }
+	if(argc != 2 || !strcmp(argv[1], "--test-all-states"))
+	{
+		uint8_t *o_table = build_heuristic_table(&max_steps_o, 0);
+		uint8_t *p_table = build_heuristic_table(&max_steps_p, 1);
+
+		state_t state;
+		for(uint32_t rank = 0; rank < ORIENTATIONS * PERMUTATIONS; rank++)
+		{
+			unrank_state(rank, &state, 2);
+			IDA_Star_search(&state, o_table, p_table, 0);
+			
+			if(rank % 50000 == 0)
+			{
+				printf("%d / 3674160 states solved\n", rank);
+			}
+		}
+		puts("all states are solved. test complete");
+		return output_failed();
+	}
     if (argc != 2 || !parse_state(argv[1], &state)) {
         /* C99 5.1.2.2.1 lets argv[0] be null when argc is 0. */
         fprintf(stderr, "usage: %s PPPPPPPOOOOOOO\n",
@@ -414,7 +453,7 @@ int main(int argc, char **argv)
         return 1;
     }
 	output_heuristic_table(o_heuristics, p_heuristics);
-	IDA_Star_search(&state, o_heuristics, p_heuristics);
+	IDA_Star_search(&state, o_heuristics, p_heuristics, 1);
 
 	/* ========== end of program =========== */
     putchar('\n');
