@@ -1,0 +1,15 @@
+===== cycles
+611
+===== instructions retired
+407
+===== cycles per instruction (CPI)
+1.5012285012285012
+===== instructions per cycle (IPC)
+0.6661211129296236
+===== wall-clock model execution time (ms)
+10
+===== simulation information (processor configuration, input file, ...)
+ISA extensions: 
+processor: RV32_5S
+source file: controlled.s
+

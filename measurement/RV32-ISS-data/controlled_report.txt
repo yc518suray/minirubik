@@ -1,0 +1,15 @@
+===== cycles
+407
+===== instructions retired
+407
+===== cycles per instruction (CPI)
+1
+===== instructions per cycle (IPC)
+1
+===== wall-clock model execution time (ms)
+2
+===== simulation information (processor configuration, input file, ...)
+ISA extensions: 
+processor: RV32_ISS
+source file: controlled.s
+
