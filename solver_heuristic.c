@@ -350,7 +350,7 @@ static void IDA_Star_search(state_t *root_state, uint8_t *o_table, uint8_t *p_ta
 				}
 				return;
 			}
-			// determine if cutting off the present branch
+			// determine if cutting off the current branch
 			else if(f > threshold)
 			{
 				if(f < next_threshold) next_threshold = f;
