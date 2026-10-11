@@ -1,4 +1,4 @@
-	.equ	DELAY, 1048576 # 2^20
+	.equ	DELAY, 1048576
 	.equ	LED_MATRIX_0_USED_SIZE, 700
 
 	.equ	ORANGE,	0x00FFA000
@@ -65,7 +65,7 @@ solution:
 #
 # a5 -> index of the current LED element
 #
-# note that x axis is along one row, and y axis is along one column
+# notice that x axis is along one row, and y axis is along one column
 main:
 	li		s0, LED_MATRIX_0_BASE
 	li		s1, LED_MATRIX_0_USED_SIZE
