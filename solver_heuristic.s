@@ -13,7 +13,7 @@
 	# Note 1: the LED I/O peripheral should be set up in Ripes
 	# Note 2: the "if" directive is NOT recognized in Ripes
 	#		  so either remove the "if" directive, or run the compiled ELF
-	.equ	LED_RENDER, 1
+	.equ	LED_RENDER, 0
 
 	.equ	DELAY, 4194304
 	.equ	LED_MATRIX_0_BASE, 0xF0000000
@@ -612,7 +612,7 @@ IDA_Star_search:
 	jal		ra, get_o_rank
 	add		a1, s11, x0
 	jal		ra, get_p_rank
-	add		s6, a0, x0		# s6 = rank of root state
+	add		s6, a0, x0		# get rank of root state
 	bnez	s6, not_trivial_solution
 	li		a3, 0			# solved
 	jal		x0, finish_search
@@ -810,7 +810,7 @@ get_p_rank:
 state_to_rank:
 # variable mapping:
 # a1 -> the state vector
-# a2 -> returned rank (2 bytes)
+# a2 -> returned 2-byte rank
 # a4 -> base of base_values
 	li		t2, 6
 	li		a2, 0
@@ -962,7 +962,6 @@ divide_three:
 	add		t0, a0, t0
 	lbu		a0, 0(t0)
 	ret
-
 
 # ===== multiply_three ===== #
 # variable mapping:

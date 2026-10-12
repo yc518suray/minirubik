@@ -215,7 +215,7 @@ static void output_heuristic_table(uint8_t *o_table, uint8_t *p_table)
 	}
 
 	fprintf(file, ".rodata\n.align 2\n\n");
-    fprintf(file, ".globl h_o\nh_o:\n");
+    fprintf(file, ".globl o_table\no_table:\n");
     for (uint16_t i = 0; i < ORIENTATIONS; i++) {
         if (i % 16U == 0) {
             fprintf(file, "\n    .byte %d", o_table[i]);
@@ -225,7 +225,7 @@ static void output_heuristic_table(uint8_t *o_table, uint8_t *p_table)
     }
     fprintf(file, "\n\n");
 
-    fprintf(file, ".globl h_p\nh_p:\n");
+    fprintf(file, ".globl p_table\np_table:\n");
     for (uint16_t i = 0; i < PERMUTATIONS; i++) {
         if (i % 16U == 0) {
             fprintf(file, "\n    .byte %d", p_table[i]);
@@ -235,6 +235,38 @@ static void output_heuristic_table(uint8_t *o_table, uint8_t *p_table)
     }
     fprintf(file, "\n");
     fclose(file);
+}
+
+static void output_move_transition_table(uint16_t *o_trans, uint16_t *p_trans)
+{
+	FILE *file = fopen("move_transition_table.s", "w");
+	if(!file)
+	{
+        fputs("could not open file\n", stderr);
+		return;
+	}
+
+	fprintf(file, ".rodata\n.align 4\n\n");
+    fprintf(file, ".global o_move_trans\no_move_trans:\n");
+    for (uint16_t i = 0; i < 3 * ORIENTATIONS; i++) {
+        if (i % 12U == 0) {
+            fprintf(file, "\n    .half%5d", o_trans[i]);
+        } else {
+            fprintf(file, ",%5d", o_trans[i]);
+        }
+    }
+    fprintf(file, "\n\n");
+
+    fprintf(file, ".global p_move_trans\np_move_trans:\n");
+    for (uint16_t i = 0; i < 3 * PERMUTATIONS; i++) {
+        if (i % 12U == 0) {
+            fprintf(file, "\n    .half%5d", p_trans[i]);
+        } else {
+            fprintf(file, ",%5d", p_trans[i]);
+        }
+    }
+    fprintf(file, "\n");
+	fclose(file);
 }
 
 static int parse_state(const char *input, state_t *state)
@@ -419,6 +451,8 @@ int main(int argc, char **argv)
         puts("max_steps_o <= 11\nmax_steps_p <= 11");
         return output_failed();
     }
+	
+	/* ========== test all states ========== */
 	if(argc != 2 || !strcmp(argv[1], "--test-all-states"))
 	{
 		uint8_t *o_table = build_heuristic_table(&max_steps_o, 0);
@@ -438,6 +472,43 @@ int main(int argc, char **argv)
 		puts("all states are solved. test complete");
 		return output_failed();
 	}
+	
+	/* ====== output move transitions ====== */
+	if(argc != 2 || !strcmp(argv[1], "--output-move-transitions"))
+	{
+		state_t state_1;
+		state_t state_2;
+		uint16_t N = ORIENTATIONS * 3;
+		uint16_t result_rank;
+		uint16_t *o_transitions = malloc((size_t) N * sizeof *o_transitions);
+		for(uint16_t o_rank = 0; o_rank < ORIENTATIONS; o_rank++)
+		{
+			unrank_state(o_rank, &state_1, 0);
+			for(uint8_t i = 0; i < 3; i++)
+			{
+				state_2 = apply_move(state_1, 3U * i);
+				result_rank = (uint16_t) rank_state(&state_2, 0);
+				o_transitions[o_rank * 3U + i] = result_rank;
+			}
+		}
+		N = PERMUTATIONS * 3;
+		uint16_t *p_transitions = malloc((size_t) N * sizeof *p_transitions);
+		for(uint16_t p_rank = 0; p_rank < PERMUTATIONS; p_rank++)
+		{
+			unrank_state(p_rank * ORIENTATIONS, &state_1, 1);
+			for(uint8_t i = 0; i < 3; i++)
+			{
+				state_2 = apply_move(state_1, 3U * i);
+				result_rank = (uint16_t) (rank_state(&state_2, 1) / ORIENTATIONS);
+				p_transitions[p_rank * 3U + i] = result_rank;
+			}
+		}
+		output_move_transition_table(o_transitions, p_transitions);
+
+		return output_failed();
+	}
+
+	/* =========== input parsing =========== */
     if (argc != 2 || !parse_state(argv[1], &state)) {
         /* C99 5.1.2.2.1 lets argv[0] be null when argc is 0. */
         fprintf(stderr, "usage: %s PPPPPPPOOOOOOO\n",
