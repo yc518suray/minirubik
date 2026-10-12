@@ -1,18 +1,18 @@
-	Command being timed: "Ripes --mode cli --src solver_heuristic_elf -t elf --proc RV32_5S --output iret_report_3.txt --iret --exectime --runinfo --cpi"
-	User time (seconds): 568.27
-	System time (seconds): 0.04
+	Command being timed: "Ripes --mode cli --src solver_heuristic_elf -t elf --proc RV32_5S --output measurement/target/iret_report_3.txt --iret --exectime --runinfo --cpi"
+	User time (seconds): 547.88
+	System time (seconds): 0.05
 	Percent of CPU this job got: 99%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 9:29.60
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 9:09.23
 	Average shared text size (kbytes): 0
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 57048
+	Maximum resident set size (kbytes): 56832
 	Average resident set size (kbytes): 0
 	Major (requiring I/O) page faults: 223
-	Minor (reclaiming a frame) page faults: 9328
-	Voluntary context switches: 792
-	Involuntary context switches: 2862
+	Minor (reclaiming a frame) page faults: 9349
+	Voluntary context switches: 869
+	Involuntary context switches: 2667
 	Swaps: 0
 	File system inputs: 0
 	File system outputs: 248

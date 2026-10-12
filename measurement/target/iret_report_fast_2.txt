@@ -3,7 +3,7 @@
 ===== cycles per instruction (CPI)
 1
 ===== wall-clock model execution time (ms)
-12695
+12487
 ===== simulation information (processor configuration, input file, ...)
 ISA extensions: 
 processor: RV32_SS

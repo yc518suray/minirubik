@@ -1,0 +1,6 @@
+   text	   data	    bss	    dec	    hex	filename
+  10080	   7420	    840	  18340	   47a4	solver_heuristic_elf
+   text	   data	    bss	    dec	    hex	filename
+   9936	  42044	    840	  52820	   ce54	solver_heuristic_fast_elf
+   text	   data	    bss	    dec	    hex	filename
+  83052	   2052	   1528	  86632	  15268	solver_heuristic_ref_elf
