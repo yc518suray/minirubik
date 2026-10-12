@@ -1,0 +1,11 @@
+===== instructions retired
+28644617
+===== cycles per instruction (CPI)
+1.3132265304856405
+===== wall-clock model execution time (ms)
+67027
+===== simulation information (processor configuration, input file, ...)
+ISA extensions: 
+processor: RV32_5S
+source file: solver_heuristic_fast_elf
+
